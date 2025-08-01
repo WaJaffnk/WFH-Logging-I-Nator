@@ -1,0 +1,11 @@
+services:
+  logging-service: 
+    build: logging-service/
+    ports: 
+      - 8082:8082
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      rabbit-setup-service:
+        condition: service_completed_successfully 
+    command: npm start  
