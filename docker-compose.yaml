@@ -1,11 +1,12 @@
 services:
   logging-service: 
-    build: logging-service/
+    build: ./
     ports: 
       - 8082:8082
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      rabbit-setup-service:
-        condition: service_completed_successfully 
     command: npm start  
+    networks:
+      - rabbitmq_wfh-inator
+
+networks:
+  rabbitmq_wfh-inator:
+    external: true
