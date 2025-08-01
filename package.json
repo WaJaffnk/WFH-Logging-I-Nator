@@ -13,7 +13,7 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "log4js": "^6.9.1",
-    "wfh-rabbit-utilities": "~1.0.19"
+    "wfh-rabbit-utilities": "^1.0.60"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
