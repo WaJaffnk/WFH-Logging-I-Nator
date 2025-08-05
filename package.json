@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "npx knex migrate:rollback && npx knex migrate:latest && nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,8 +12,10 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "knex": "^3.1.0",
     "log4js": "^6.9.1",
-    "wfh-rabbit-utilities": "^1.0.60"
+    "pg": "^8.16.3",
+    "wfh-rabbit-utilities": "^1.0.80"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
