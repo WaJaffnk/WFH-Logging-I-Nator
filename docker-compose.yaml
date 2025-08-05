@@ -1,12 +1,28 @@
 services:
   logging-service: 
     build: ./
+    container_name: logging-service
     ports: 
       - 8082:8082
     command: npm start  
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+    healthcheck:
+          test: ["CMD-SHELL", "wget --spider --quiet http://127.0.0.1:8082/health || exit 1"]
+          interval: 10s
+          timeout: 10s
+          retries: 10
+          start_period: 5s
     networks:
-      - rabbitmq_wfh-inator
+      - rabbitmq
+      - wfhinatordb
 
 networks:
-  rabbitmq_wfh-inator:
+  rabbitmq:
     external: true
+    name: rabbitmq-network
+  wfhinatordb:
+    external: true
+    name: wfhinatordb-network
