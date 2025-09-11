@@ -4,7 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npx knex migrate:rollback && npx knex migrate:latest && nodemon server.js"
+    "clean": "rm -rf dist",
+    "start": "./node_modules/.bin/knex migrate:rollback && ./node_modules/.bin/knex migrate:latest && node server.js",
+    "build:babel": "babel server.js --out-dir build --copy-files --delete-dir-on-start",
+    "build": "npm run clean && npm run build:babel"
   },
   "author": "",
   "license": "ISC",
@@ -14,10 +17,12 @@
     "express": "^5.1.0",
     "knex": "^3.1.0",
     "log4js": "^6.9.1",
-    "pg": "^8.16.3",
-    "wfh-rabbit-utilities": "^1.0.80"
+    "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.3",
+    "@babel/preset-env": "^7.28.3",
+    "babel-loader": "^10.0.0",
     "nodemon": "^3.1.10"
   }
 }

@@ -1,3 +1,5 @@
+var _this = this;
+
 const { Subscription, ServiceName, LogMessage } = require("wfh-rabbit-utilities");
 const knexConfig = require('./knexfile.js')["development"];
 const knex = require('knex')(knexConfig);
@@ -14,7 +16,7 @@ dotenv.config();
 
 const DEFAULT_RABBIT_URL = process.env.DEFAULT_RABBIT_URL || "NO ENV VARIABLE SET UP FOR DEFAULT_RABBIT_URL";
 const QUEUE_NAME = process.env.QUEUE_NAME || "NO ENV VARIABLE SET UP FOR QUEUE_NAME";
-const SERVICE_NAME = ServiceName.loggingService || "LOGGING SERVICE - UNABLE TO GET SERVICE NAME FROM CONSTANTS"
+const SERVICE_NAME = ServiceName.loggingService || "LOGGING SERVICE - UNABLE TO GET SERVICE NAME FROM CONSTANTS";
 const EXCHANGE_NAME = process.env.EXCHANGE_NAME || "NO ENV VARIABLE SET UP FOR EXCHANGE_NAME";
 let subscription;
 let log4jsLogger;
@@ -24,26 +26,25 @@ app.use(cors());
 
 app.get("/", (request, response) => {
     response.status(200).send("Welcome to the Workhorse for the WFH-Inator-Logging Service!!!");
-})
+});
 
 app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
 
-const processMessage = async (message) => {
-    this.knex = knex;
+const processMessage = async message => {
+    _this.knex = knex;
     if (message.content) {
         try {
             log4jsLogger.info(`${SERVICE_NAME}: CONSUMING MESSAGE: `, message.content.toString());
             let logMessage = LogMessage.fromJson(message.content);
-            await this.knex("logs").insert(logMessage.toLogTableInsert());
-            log4jsLogger.info(`${SERVICE_NAME} - SUCCESS INSERTING RECORD TO DB`)
-        }
-        catch (error) {
+            await _this.knex("logs").insert(logMessage.toLogTableInsert());
+            log4jsLogger.info(`${SERVICE_NAME} - SUCCESS INSERTING RECORD TO DB`);
+        } catch (error) {
             log4jsLogger.error(`${SERVICE_NAME} - error consuming message:`, error);
         }
     }
-}
+};
 
 async function startServer() {
     log4jsLogger = log4js.getLogger("files");
@@ -58,5 +59,3 @@ async function startServer() {
 }
 
 startServer();
-
-
