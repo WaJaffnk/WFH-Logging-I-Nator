@@ -1,0 +1,26 @@
+
+services:
+  logging-service-ui:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: logging-ui
+    ports:
+      - "4173:4173"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - haddoservnet
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider --quiet http://127.0.0.1:4173/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+networks:
+  haddoservnet:
+    external: true

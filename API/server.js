@@ -1,6 +1,7 @@
 const { Subscription, ServiceName, LogMessage } = require("wfh-rabbit-utilities");
-const knexConfig = require('./knexfile.js')["development"];
-const knex = require('knex')(knexConfig);
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 const log4js = require('log4js');
 const logConfig = require('./log4js.config.json');
@@ -9,8 +10,8 @@ const express = require('express');
 const cors = require('cors');
 const PORT = 8082;
 const app = express();
-const dotenv = require('dotenv');
-dotenv.config();
+const knexConfig = require('./knexfile.js')["development"];
+const knex = require('knex')(knexConfig);
 
 const DEFAULT_RABBIT_URL = process.env.DEFAULT_RABBIT_URL || "NO ENV VARIABLE SET UP FOR DEFAULT_RABBIT_URL";
 const QUEUE_NAME = process.env.QUEUE_NAME || "NO ENV VARIABLE SET UP FOR QUEUE_NAME";
@@ -28,6 +29,50 @@ app.get("/", (request, response) => {
 
 app.get('/health', (req, res) => {
     res.status(200).send('OK');
+});
+
+app.get('/health/test-logs', async (req, res) => {
+    let message = req.query.message || "No message provided, this is a default test log entry.";
+
+    try {
+        await knex("logs").insert({
+            log_level: "INFO",
+            log_category: "HEALTH_CHECK",
+            created_timestamp: new Date(),
+            message_id: require('uuid').v4(),
+            publishing_service_name: SERVICE_NAME,
+            consuming_service_name: SERVICE_NAME,
+            message: message
+        });
+        log4jsLogger.info(`${SERVICE_NAME} - Test log entry created successfully.`);
+        res.status(200).send('Test log entry created successfully.');
+    } catch (error) {
+        log4jsLogger.error(`${SERVICE_NAME} - error creating test log entry:`, error);
+        res.status(500).send('Failed to create test log entry.');
+    }
+});
+
+app.get('/logs', async (req, res) => {
+    try {
+        const logs = await knex.select('*').from('logs').orderBy('logged_at_timestamp', 'desc').limit(100);
+        res.status(200).json(logs);
+    } catch (error) {
+        log4jsLogger.error(`${SERVICE_NAME} - error fetching logs:`, error);
+        res.status(500).send('Failed to fetch logs.');
+    }
+});
+
+app.get('logs/', async (req, res) => {
+    try { 
+        let logs = await knex.select('*').from('logs').orderBy('logged_at_timestamp', 'desc').limit(100);
+
+        res.status(200).json(logs);
+    } catch (error) {
+        if(log4jsLogger){
+            log4jsLogger.error(`${SERVICE_NAME} - error fetching logs:`, error);
+        }        
+        res.status(500).send('Failed to fetch logs.');
+    }
 });
 
 const processMessage = async (message) => {
