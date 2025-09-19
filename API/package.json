@@ -7,7 +7,8 @@
     "clean": "rm -rf dist",
     "start": "./node_modules/.bin/knex migrate:rollback && ./node_modules/.bin/knex migrate:latest && node server.js",
     "build:babel": "babel server.js --out-dir build --copy-files --delete-dir-on-start",
-    "build": "npm run clean && npm run build:babel"
+    "build": "npm run clean && npm run build:babel",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +24,10 @@
     "@babel/core": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
     "babel-loader": "^10.0.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "jest": "^30.1.3",
+    "jest-mock": "^30.0.5",
+    "jest-mock-extended": "^4.0.0",
+    "mock-knex": "^0.4.13"
   }
 }
