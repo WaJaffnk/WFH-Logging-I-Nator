@@ -3,6 +3,7 @@ FROM node:lts AS builder
 WORKDIR /app
 COPY . .
 RUN rm package-lock.json
+RUN npm config set registry https://verdaccio.haddoworld.com
 RUN npm install
 
 # Production stage

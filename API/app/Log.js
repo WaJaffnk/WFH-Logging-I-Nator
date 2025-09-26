@@ -14,6 +14,19 @@ class Log {
         this.message = data.message;
     }
 
+    static genericErrorLog(serviceName, messageContent, error) {
+        return new Log({
+            log_level: "ERROR",
+            log_category: "RABBITMQ_CONSUMPTION_ERROR",
+            created_timestamp: new Date(),
+            message_id: require("uuid").v4(),
+            logged_at_timestamp: new Date(),
+            publishing_service_name: serviceName || "UNKNOWN",
+            consuming_service_name: serviceName || "UNKNOWN",
+            message: `Error occurred: ${error.message}, Context: ${messageContent}`
+        });
+    }
+
     static toDbLog(log) {
         return {
             id: log.id,

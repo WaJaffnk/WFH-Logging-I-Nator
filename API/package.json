@@ -6,9 +6,11 @@
   "scripts": {
     "clean": "rm -rf dist",
     "start": "./node_modules/.bin/knex migrate:rollback && ./node_modules/.bin/knex migrate:latest && node server.js",
+    "dev": "NODE_ENV=local nodemon --exec babel-node server.js",
     "build:babel": "babel server.js --out-dir build --copy-files --delete-dir-on-start",
     "build": "npm run clean && npm run build:babel",
-    "test": "jest"
+    "lint": "eslint .",
+    "test": "jest && npm run lint"
   },
   "author": "",
   "license": "ISC",
@@ -18,16 +20,22 @@
     "express": "^5.1.0",
     "knex": "^3.1.0",
     "log4js": "^6.9.1",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "wfh-rabbit-utilities": "^1.0.81"
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
     "babel-loader": "^10.0.0",
-    "nodemon": "^3.1.10",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jest": "^29.0.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
     "jest": "^30.1.3",
     "jest-mock": "^30.0.5",
     "jest-mock-extended": "^4.0.0",
-    "mock-knex": "^0.4.13"
+    "mock-knex": "^0.4.13",
+    "nodemon": "^3.1.10"
   }
 }
